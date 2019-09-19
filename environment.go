@@ -17,6 +17,7 @@ var FileLog Filelog
 var Port string
 var SecretKey = "11111111" //change it
 var mutex sync.Mutex
+var sites []Site
 
 func GetPort() {
 	flag.Parse()
@@ -75,9 +76,14 @@ func CreateTempDir() {
 		}
 	}
 }
+func CreateListSites() {
+	sites = make([]Site, 0)
+	sites = append(sites, Site{Alias: "galaktika.clinic", Url: "http://galaktika.clinic/prices/", FileName: "galaktika.clinic.csv"})
+}
 
 func CreateEnv() {
 	CreateLogFile()
 	CreateTempDir()
 	GetPort()
+	CreateListSites()
 }
