@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strings"
 )
 
@@ -17,20 +15,6 @@ func (t *ServerMed) ParserGalactikaClinic(w http.ResponseWriter, r *http.Request
 	} else {
 		fmt.Fprint(w, t.StringToJson(map[string]string{"Ok": "the parser worked successfully"}))
 	}
-}
-
-func (t *ServerMed) GetGalactikaClinic(w http.ResponseWriter, r *http.Request, s Site) {
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		t.returnError(w, r, err)
-		return
-	}
-	dirf := filepath.FromSlash(fmt.Sprintf("%s/%s/%s", dir, DirTemp, s.FileName))
-	if _, err := os.Stat(dirf); os.IsNotExist(err) {
-		t.returnError(w, r, err)
-		return
-	}
-	http.ServeFile(w, r, dirf)
 }
 
 func (t *ServerMed) GalactikaClinic(w http.ResponseWriter, r *http.Request, s Site) error {

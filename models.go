@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 )
 
 type Site struct {
@@ -48,14 +47,14 @@ func (t *ServerMed) Parser(w http.ResponseWriter, r *http.Request, s Site) {
 func (t *ServerMed) GetCsv(w http.ResponseWriter, r *http.Request, s Site) {
 	switch {
 	case s.Alias == "galaktika.clinic":
-		t.GetGalactikaClinic(w, r, s)
+		t.ReturnFileCsvToClient(w, r, s)
 	default:
 		t.returnError(w, r, errors.New("site not found"))
 	}
 }
 
 func (t *ServerMed) WriteToCsv(mp map[string]string, s Site) error {
-	currentTime := time.Now()
+	//currentTime := time.Now()
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
 		return err
@@ -67,9 +66,10 @@ func (t *ServerMed) WriteToCsv(mp map[string]string, s Site) error {
 	}
 	defer w.Close()
 	writer := csv.NewWriter(w)
+	writer.Comma = ';'
 	defer writer.Flush()
 	for k, v := range mp {
-		err := writer.Write([]string{k, v, currentTime.Format("2006.01.02 15:04:05")})
+		err := writer.Write([]string{k, v})
 		if err != nil {
 			return err
 		}
