@@ -41,6 +41,8 @@ func (t *ServerMed) Parser(w http.ResponseWriter, r *http.Request, s Site) {
 		t.ParserGalactikaClinic(w, r, s)
 	case s.Alias == "cidk.ru":
 		t.ParserCidkRu(w, r, s)
+	case s.Alias == "delight-lancette.ru":
+		t.ParserDelightLancetteRu(w, r, s)
 	default:
 		t.returnError(w, r, errors.New("site not found"))
 	}
@@ -51,6 +53,8 @@ func (t *ServerMed) GetCsv(w http.ResponseWriter, r *http.Request, s Site) {
 	case s.Alias == "galaktika.clinic":
 		t.ReturnFileCsvToClient(w, r, s)
 	case s.Alias == "cidk.ru":
+		t.ReturnFileCsvToClient(w, r, s)
+	case s.Alias == "delight-lancette.ru":
 		t.ReturnFileCsvToClient(w, r, s)
 	default:
 		t.returnError(w, r, errors.New("site not found"))
