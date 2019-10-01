@@ -79,6 +79,7 @@ func CreateTempDir() {
 func CreateListSites() {
 	sites = make([]Site, 0)
 	sites = append(sites, Site{Alias: "galaktika.clinic", Url: "http://galaktika.clinic/prices/", FileName: "galaktika.clinic.csv"})
+	sites = append(sites, Site{Alias: "cidk.ru", Url: "http://www.cidk.ru/prices/prices15.xml", FileName: "cidk.ru.csv"})
 }
 
 func CreateEnv() {
