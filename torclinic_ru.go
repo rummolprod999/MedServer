@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-func (t *ServerMed) ParserCidkRu(w http.ResponseWriter, r *http.Request, s Site) {
-	err := t.CidkRu(w, r, s)
+func (t *ServerMed) ParserTorClinic(w http.ResponseWriter, r *http.Request, s Site) {
+	err := t.TorClinic(w, r, s)
 	if err != nil {
 		t.returnError(w, r, err)
 	} else {
@@ -17,7 +17,7 @@ func (t *ServerMed) ParserCidkRu(w http.ResponseWriter, r *http.Request, s Site)
 	}
 }
 
-func (t *ServerMed) CidkRu(w http.ResponseWriter, r *http.Request, s Site) error {
+func (t *ServerMed) TorClinic(w http.ResponseWriter, r *http.Request, s Site) error {
 	defer SaveStack()
 	downString := DownloadPage(s.Url)
 	if downString == "" {
@@ -30,24 +30,27 @@ func (t *ServerMed) CidkRu(w http.ResponseWriter, r *http.Request, s Site) error
 		return err
 	}
 	sliceGal := make([]ItemArr, 0)
-	doc.Find("item").Each(func(i int, ss *goquery.Selection) {
-		gname := ss.Parent().AttrOr("title", "")
-		ggname := ss.Parent().Parent().AttrOr("title", "")
-		name := strings.TrimSpace(ss.Find("desc").First().AttrOr("value", ""))
-		if gname != "" {
-			name = fmt.Sprintf("%s | %s", gname, name)
+	title := ""
+	doc.Find("li.price_list--item").Each(func(i int, ss *goquery.Selection) {
+		name1 := strings.TrimSpace(ss.Find("div:nth-child(2)").First().Text())
+		name := strings.TrimSpace(ss.Find("div:nth-child(3)").First().Text())
+		price := strings.TrimSpace(ss.Find("div:nth-child(1)").First().Text())
+		if name1 == "" && price == "" {
+			title = name
+			return
 		}
-		if ggname != "" {
-			name = fmt.Sprintf("%s | %s", ggname, name)
+		if name1 != "" {
+			name = fmt.Sprintf("%s | %s", name1, name)
 		}
-		price := strings.TrimSpace(ss.Find("price").First().AttrOr("value", ""))
-		if price == "Цена (руб.)" {
+
+		if title != "" {
+			name = fmt.Sprintf("%s | %s", title, name)
+		} else {
 			return
 		}
 		if name != "" && price != "" {
 			sliceGal = append(sliceGal, ItemArr{Name: name, Price: price})
 		}
-
 	})
 	if len(sliceGal) > 0 {
 		err := t.WriteToCsvNew(sliceGal, s)

@@ -29,7 +29,7 @@ func (t *ServerMed) DelightLancetteRu(w http.ResponseWriter, r *http.Request, s 
 		Logging(err)
 		return err
 	}
-	mapGal := make(map[string]string)
+	sliceGal := make([]ItemArr, 0)
 	doc.Find("dd").Each(func(i int, ss *goquery.Selection) {
 		nameParent := ss.Prev().Prev().Text()
 		ss.Find("ul li").Each(func(i int, tt *goquery.Selection) {
@@ -40,16 +40,16 @@ func (t *ServerMed) DelightLancetteRu(w http.ResponseWriter, r *http.Request, s 
 			}
 			name = fmt.Sprintf("%s | %s", nameParent, name)
 			if name != "" && price != "" {
-				mapGal[name] = price
-			}
-			if len(mapGal) > 0 {
-				err := t.WriteToCsv(mapGal, s)
-				if err != nil {
-					Logging(err)
-
-				}
+				sliceGal = append(sliceGal, ItemArr{Name: name, Price: price})
 			}
 		})
 	})
+	if len(sliceGal) > 0 {
+		err := t.WriteToCsvNew(sliceGal, s)
+		if err != nil {
+			Logging(err)
+
+		}
+	}
 	return nil
 }

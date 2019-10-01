@@ -38,14 +38,13 @@ func (t *ServerMed) GalactikaClinic(w http.ResponseWriter, r *http.Request, s Si
 		if name != "" && price != "" {
 			mapGal[name] = price
 		}
-		if len(mapGal) > 0 {
-			err := t.WriteToCsv(mapGal, s)
-			if err != nil {
-				Logging(err)
-
-			}
-		}
-
 	})
+	if len(mapGal) > 0 {
+		err := t.WriteToCsv(mapGal, s)
+		if err != nil {
+			Logging(err)
+
+		}
+	}
 	return nil
 }

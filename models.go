@@ -16,6 +16,11 @@ type Site struct {
 	FileName string
 }
 
+type ItemArr struct {
+	Name  string
+	Price string
+}
+
 func (t *ServerMed) findSiteInList(alias string) (error, Site) {
 	for _, el := range sites {
 		if el.Alias == alias {
@@ -43,6 +48,8 @@ func (t *ServerMed) Parser(w http.ResponseWriter, r *http.Request, s Site) {
 		t.ParserCidkRu(w, r, s)
 	case s.Alias == "delight-lancette.ru":
 		t.ParserDelightLancetteRu(w, r, s)
+	case s.Alias == "toriclinic.ru":
+		t.ParserTorClinic(w, r, s)
 	default:
 		t.returnError(w, r, errors.New("site not found"))
 	}
@@ -55,6 +62,8 @@ func (t *ServerMed) GetCsv(w http.ResponseWriter, r *http.Request, s Site) {
 	case s.Alias == "cidk.ru":
 		t.ReturnFileCsvToClient(w, r, s)
 	case s.Alias == "delight-lancette.ru":
+		t.ReturnFileCsvToClient(w, r, s)
+	case s.Alias == "toriclinic.ru":
 		t.ReturnFileCsvToClient(w, r, s)
 	default:
 		t.returnError(w, r, errors.New("site not found"))
@@ -78,6 +87,30 @@ func (t *ServerMed) WriteToCsv(mp map[string]string, s Site) error {
 	defer writer.Flush()
 	for k, v := range mp {
 		err := writer.Write([]string{k, v})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (t *ServerMed) WriteToCsvNew(mp []ItemArr, s Site) error {
+	//currentTime := time.Now()
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		return err
+	}
+	dirf := filepath.FromSlash(fmt.Sprintf("%s/%s/%s", dir, DirTemp, s.FileName))
+	w, err := os.Create(dirf)
+	if err != nil {
+		return err
+	}
+	defer w.Close()
+	writer := csv.NewWriter(w)
+	writer.Comma = ';'
+	defer writer.Flush()
+	for _, v := range mp {
+		err := writer.Write([]string{v.Name, v.Price})
 		if err != nil {
 			return err
 		}

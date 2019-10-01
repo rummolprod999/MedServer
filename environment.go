@@ -81,6 +81,7 @@ func CreateListSites() {
 	sites = append(sites, Site{Alias: "galaktika.clinic", Url: "http://galaktika.clinic/prices/", FileName: "galaktika.clinic.csv"})
 	sites = append(sites, Site{Alias: "cidk.ru", Url: "http://www.cidk.ru/prices/prices15.xml", FileName: "cidk.ru.csv"})
 	sites = append(sites, Site{Alias: "delight-lancette.ru", Url: "https://delight-lancette.ru/price/", FileName: "delight-lancette.ru.csv"})
+	sites = append(sites, Site{Alias: "toriclinic.ru", Url: "https://toriclinic.ru/prices/cosmetology/", FileName: "toriclinic.ru.csv"})
 }
 
 func CreateEnv() {
