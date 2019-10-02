@@ -93,5 +93,40 @@ func (t *ServerMed) MskLaserDoctorInner1(url, name, name1 string, sliceGal *[]It
 			*sliceGal = append(*sliceGal, ItemArr{Name: fullName, Price: price})
 		}
 	})
+	doc.Find("div.price_list_item_body_list_item_header").EachWithBreak(func(i int, ss *goquery.Selection) bool {
+		url := ss.AttrOr("data-href", "")
+		if url == "" {
+			return true
+		}
+		url = fmt.Sprintf("https://msk.laserdoctor.ru%s", url)
+		name3 := strings.TrimSpace(ss.Text())
+		t.MskLaserDoctorInner2(url, name, name1, name3, sliceGal, s)
+		return true
+	})
+	return true
+}
+
+func (t *ServerMed) MskLaserDoctorInner2(url, name, name1, name3 string, sliceGal *[]ItemArr, s Site) bool {
+	downString := DownloadPage(url)
+	if downString == "" {
+		Logging("received empty string")
+		return false
+	}
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(downString))
+	if err != nil {
+		Logging(err)
+		return false
+	}
+	doc.Find("div.price_table_row").Each(func(i int, ss *goquery.Selection) {
+		name2 := strings.TrimSpace(ss.Find("div.name").First().Text())
+		if name2 == "" {
+			return
+		}
+		fullName := cleanString(fmt.Sprintf("%s | %s | %s | %s", name, name1, name3, name2))
+		price := strings.TrimSpace(strings.Replace(ss.Find("div:contains('Стоимость:')").First().Text(), "Стоимость:", "", -1))
+		if fullName != "" && price != "" {
+			*sliceGal = append(*sliceGal, ItemArr{Name: fullName, Price: price})
+		}
+	})
 	return true
 }
