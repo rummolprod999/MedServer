@@ -45,7 +45,7 @@ func (t *ServerMed) DelightLancetteRu(w http.ResponseWriter, r *http.Request, s 
 		})
 	})
 	if len(sliceGal) > 0 {
-		err := t.WriteToCsvNew(sliceGal, s)
+		err := t.WriteSliceToCsvNew(sliceGal, s)
 		if err != nil {
 			Logging(err)
 

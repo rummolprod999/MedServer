@@ -50,6 +50,8 @@ func (t *ServerMed) Parser(w http.ResponseWriter, r *http.Request, s Site) {
 		t.ParserDelightLancetteRu(w, r, s)
 	case s.Alias == "toriclinic.ru":
 		t.ParserTorClinic(w, r, s)
+	case s.Alias == "msk.laserdoctor.ru":
+		t.ParserMskLaserDoctor(w, r, s)
 	default:
 		t.returnError(w, r, errors.New("site not found"))
 	}
@@ -64,6 +66,8 @@ func (t *ServerMed) GetCsv(w http.ResponseWriter, r *http.Request, s Site) {
 	case s.Alias == "delight-lancette.ru":
 		t.ReturnFileCsvToClient(w, r, s)
 	case s.Alias == "toriclinic.ru":
+		t.ReturnFileCsvToClient(w, r, s)
+	case s.Alias == "msk.laserdoctor.ru":
 		t.ReturnFileCsvToClient(w, r, s)
 	default:
 		t.returnError(w, r, errors.New("site not found"))
@@ -94,7 +98,7 @@ func (t *ServerMed) WriteToCsv(mp map[string]string, s Site) error {
 	return nil
 }
 
-func (t *ServerMed) WriteToCsvNew(mp []ItemArr, s Site) error {
+func (t *ServerMed) WriteSliceToCsvNew(mp []ItemArr, s Site) error {
 	//currentTime := time.Now()
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {

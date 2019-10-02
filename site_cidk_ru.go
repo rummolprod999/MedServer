@@ -50,7 +50,7 @@ func (t *ServerMed) CidkRu(w http.ResponseWriter, r *http.Request, s Site) error
 
 	})
 	if len(sliceGal) > 0 {
-		err := t.WriteToCsvNew(sliceGal, s)
+		err := t.WriteSliceToCsvNew(sliceGal, s)
 		if err != nil {
 			Logging(err)
 
