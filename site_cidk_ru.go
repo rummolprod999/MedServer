@@ -19,11 +19,21 @@ func (t *ServerMed) ParserCidkRu(w http.ResponseWriter, r *http.Request, s Site)
 
 func (t *ServerMed) CidkRu(w http.ResponseWriter, r *http.Request, s Site) error {
 	defer SaveStack()
-	downString := DownloadPage(s.Url)
-	if downString == "" {
-		Logging("received empty string")
-		return errors.New("received empty string")
+	downString := ""
+	for i := 16; i <= 100; i++ {
+		url := fmt.Sprintf("%s%d.xml", s.Url, i)
+		downString = DownloadPage(url)
+		if downString == "" {
+			Logging("received empty string")
+			return errors.New("received empty string")
+		}
+		if strings.Contains(downString, "<h2>Page Not Found</h2>") {
+			continue
+		} else {
+			break
+		}
 	}
+
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(downString))
 	if err != nil {
 		Logging(err)

@@ -18,6 +18,7 @@ var Port string
 var SecretKey = "11111111" //change it
 var mutex sync.Mutex
 var sites []Site
+var debug = false
 
 func GetPort() {
 	flag.Parse()
@@ -27,6 +28,10 @@ func GetPort() {
 		Port = "8181"
 	} else {
 		Port = ArgS
+	}
+	ArgDebug := flag.Arg(1)
+	if ArgDebug == "debug" {
+		debug = true
 	}
 }
 
@@ -79,7 +84,7 @@ func CreateTempDir() {
 func CreateListSites() {
 	sites = make([]Site, 0)
 	sites = append(sites, Site{Alias: "galaktika.clinic", Url: "http://galaktika.clinic/prices/", FileName: "galaktika.clinic.csv"})
-	sites = append(sites, Site{Alias: "cidk.ru", Url: "http://www.cidk.ru/prices/prices15.xml", FileName: "cidk.ru.csv"})
+	sites = append(sites, Site{Alias: "cidk.ru", Url: "http://www.cidk.ru/prices/prices", FileName: "cidk.ru.csv"})
 	sites = append(sites, Site{Alias: "delight-lancette.ru", Url: "https://delight-lancette.ru/price/", FileName: "delight-lancette.ru.csv"})
 	sites = append(sites, Site{Alias: "toriclinic.ru", Url: "https://toriclinic.ru/prices/cosmetology/", FileName: "toriclinic.ru.csv"})
 	sites = append(sites, Site{Alias: "msk.laserdoctor.ru", Url: "https://msk.laserdoctor.ru/price_list/", FileName: "msk.laserdoctor.ru.csv"})

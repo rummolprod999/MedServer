@@ -11,13 +11,19 @@ import (
 )
 
 func (t *ServerMed) indexHandler(w http.ResponseWriter, r *http.Request) {
+	if debug {
+		Logging(fmt.Sprintf("GET %s", r.RequestURI))
+	}
 	data := "API SERVER"
-	tmpl, _ := template.New("data").Parse("<h1>{{.}}</h1>Examples:<p>GET /run/galaktika.clinic - run parser http://galaktika.clinic/prices/<p>GET /get/galaktika.clinic - return CSV file<p>")
+	tmpl, _ := template.New("data").Parse("<h1>{{.}}</h1>Examples:<p>GET /run/galaktika.clinic - run parser http://galaktika.clinic/prices/<p>GET /get/galaktika.clinic - return CSV file<p>If second flag 'debug', all requests are being logged in log file<p>")
 	tmpl.Execute(w, data)
 }
 
 func (t *ServerMed) parserSite(w http.ResponseWriter, r *http.Request) {
 	defer SaveStack()
+	if debug {
+		Logging(fmt.Sprintf("GET %s", r.RequestURI))
+	}
 	vars := mux.Vars(r)
 	siteParam := strings.TrimSpace(vars["site"])
 	err, st := t.findSiteInList(siteParam)
@@ -29,6 +35,9 @@ func (t *ServerMed) parserSite(w http.ResponseWriter, r *http.Request) {
 
 func (t *ServerMed) returnCsv(w http.ResponseWriter, r *http.Request) {
 	defer SaveStack()
+	if debug {
+		Logging(fmt.Sprintf("GET %s", r.RequestURI))
+	}
 	vars := mux.Vars(r)
 	siteParam := strings.TrimSpace(vars["site"])
 	err, st := t.findSiteInList(siteParam)
